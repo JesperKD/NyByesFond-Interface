@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI_Interface", "GUI_Interface\GUI_Interface.csproj", "{CA9C8DD8-A72B-4B3A-BA62-46D78698E727}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{5DB863DE-11AA-43A4-BCB5-C04D1E59E0AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "Database\DataAccess.csproj", "{5DB863DE-11AA-43A4-BCB5-C04D1E59E0AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
