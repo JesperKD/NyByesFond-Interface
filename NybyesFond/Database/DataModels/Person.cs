@@ -9,7 +9,7 @@ namespace DataAccess.DataModels
     /// <summary>
     /// object for person including all person data
     /// </summary>
-    public class Person : BaseEntity
+    public class Person
     {
         private readonly string _firstName;
         private readonly string _lastName;
@@ -26,7 +26,7 @@ namespace DataAccess.DataModels
         /// <param name="eMail">Email</param>
         /// <param name="address">address object</param>
         /// <param name="education">education object</param>
-        public Person(int id, string firstName, string lastName, string eMail, Address address, Education education) : base(id)
+        public Person(string firstName, string lastName, string eMail, Address address, Education education)
         {
             _firstName = firstName;
             _lastName = lastName;

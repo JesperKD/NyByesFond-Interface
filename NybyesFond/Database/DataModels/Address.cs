@@ -9,7 +9,7 @@ namespace DataAccess.DataModels
     /// <summary>
     /// Object containing Location data
     /// </summary>
-    public class Address : BaseEntity
+    public class Address
     {
         private readonly string _roadName;
         private readonly int _houseNumber;
@@ -24,7 +24,7 @@ namespace DataAccess.DataModels
         /// <param name="houseNumber"> housenumber </param>
         /// <param name="zipNumber"> postal code </param>
         /// <param name="city"> City name </param>
-        public Address(int id, string roadName, int houseNumber, string zipNumber, string city) : base(id)
+        public Address(string roadName, int houseNumber, string zipNumber, string city)
         {
             _roadName = roadName;
             _houseNumber = houseNumber;

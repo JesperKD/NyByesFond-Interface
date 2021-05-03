@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataAccess.DataModels;
+using DataAccess.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,40 @@ namespace GUI_Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly ILegatRepository _legatRepository;
+
+        public MainWindow(ILegatRepository legatRepository)
         {
             InitializeComponent();
+            _legatRepository = legatRepository;
+
+
+            try
+            {
+                Task.Run(async () =>
+                    {
+                        await CreateLegat();
+                    });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
-    }
+
+
+        public async Task CreateLegat()
+        {
+            await _legatRepository.Create(
+                new DataAccess.DataModels.Legat(
+                    new Person("Rasmus", "Hedeland", "DinMor@Gmail.COm", 
+                                new Address("BruhGade", 2, "5960", "ringsted"),
+                                new Education("stx", "htx", "MinMor")),
+                    "jeg kan godt lide epneg", 23232323, "det dejligt med lkajg", DateTime.Now, DateTime.Now.Add(TimeSpan.FromDays(20)), "Ej søgt", "Nuuu", "true", DateTime.Now 
+                    )
+                );
+        }
+
+    } 
 }

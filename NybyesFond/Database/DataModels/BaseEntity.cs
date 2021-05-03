@@ -10,7 +10,7 @@ namespace DataAccess.DataModels
     {
         private readonly int _id;
 
-        protected BaseEntity(int id)
+        protected BaseEntity(int id = 0)
         {
             _id = id;
         }

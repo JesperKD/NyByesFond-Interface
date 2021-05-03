@@ -9,7 +9,7 @@ namespace DataAccess.DataModels
     /// <summary>
     /// Object for educational information
     /// </summary>
-    public class Education : BaseEntity
+    public class Education
     {
         private readonly string _youthEducation;
         private readonly string _ongoinEducation;
@@ -22,7 +22,7 @@ namespace DataAccess.DataModels
         /// <param name="youthEducation"> previous education</param>
         /// <param name="ongoinEducation">current education</param>
         /// <param name="placeOfEducation">name of current educational institute</param>
-        public Education(int id, string youthEducation, string ongoinEducation, string placeOfEducation) : base(id)
+        public Education(string youthEducation, string ongoinEducation, string placeOfEducation)
         {
             _youthEducation = youthEducation;
             _ongoinEducation = ongoinEducation;
