@@ -36,7 +36,7 @@ namespace DataAccess.DataModels
         /// <param name="knowledgeOfOtherSearch">names of other fonds that have been searched from</param>
         /// <param name="additionalInfo"></param>
         /// <param name="todaysDate">Todays Date</param>
-        public Legat(Person person, string reasonForSearch, int wishedAmount, string budget, DateTime dateFrom, DateTime dateTo, string isSearchedAlready, string knowledgeOfOtherSearch, string additionalInfo, DateTime todaysDate, int id = 0) : base(id)
+        public Legat(Person person, string reasonForSearch, int wishedAmount, string budget, DateTime dateFrom, DateTime dateTo, string isSearchedAlready, string knowledgeOfOtherSearch, string additionalInfo, DateTime todaysDate, long id = 0) : base(id)
         {
             _person = person;
             _reasonForSearch = reasonForSearch;

@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,43 @@ namespace DataAccess.Repositories
             _database = database;
         }
 
-        public bool CheckForNewRecords(int existingDataCount)
+        public async Task<bool> CheckForNewRecords(long existingDataCount)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"SELECT COUNT(`ansoeg_id`) FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                await _database.OpenConnectionAsync();
+
+                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
+
+                if (reader.HasRows == false) return false;
+
+                long rowCount = 0;
+
+                while(await reader.ReadAsync())
+                {
+                    rowCount = reader.GetInt64(0);
+                }
+
+                if (existingDataCount < rowCount || existingDataCount > rowCount) return true;
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
+
         }
 
         public async Task Create(Legat createEntity)
@@ -72,24 +107,224 @@ namespace DataAccess.Repositories
             }
         }
 
-        public Task Delete(Legat deleteEntity)
+        public async Task Delete(Legat deleteEntity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"DELETE FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                cmd.Parameters.AddWithValue("@id", deleteEntity.Id);
+                await _database.OpenConnectionAsync();
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
         }
 
-        public Task<IEnumerable<Legat>> GetAll()
+        public async Task<IEnumerable<Legat>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                await _database.OpenConnectionAsync();
+
+                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
+
+                if (reader.HasRows == false) return Enumerable.Empty<Legat>();
+
+                List<Legat> legats = new();
+
+                while (await reader.ReadAsync())
+                {
+                    Legat temporaryLegat = new(
+                        id: reader.GetInt64(0),
+                        person: new Person(
+                            firstName: reader.GetString(1),
+                            lastName: reader.GetString(2),
+                            eMail: reader.GetString(3),
+                            address: new Address(
+                                roadName: reader.GetString(4),
+                                houseNumber: int.Parse(reader.GetString(5)),
+                                zipNumber: reader.GetString(6),
+                                city: reader.GetString(7)),
+                            education: new Education(
+                                youthEducation: reader.GetString(8),
+                                ongoinEducation: reader.GetString(9),
+                                placeOfEducation: reader.GetString(10))),
+                        reasonForSearch: reader.GetString(11),
+                        wishedAmount: int.Parse(reader.GetString(12)),
+                        budget: reader.GetString(13),
+                        dateFrom: reader.GetDateTime(14),
+                        dateTo: reader.GetDateTime(15),
+                        isSearchedAlready: reader.GetString(16),
+                        knowledgeOfOtherSearch: reader.GetString(17),
+                        additionalInfo: reader.GetString(18),
+                        todaysDate: reader.GetDateTime(19)
+                    );
+
+                    legats.Add(temporaryLegat);
+                }
+                return legats;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
         }
 
-        public Task<Legat> GetById(int id)
+        public async Task<Legat> GetById(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                cmd.Parameters.AddWithValue("@id", id);
+
+                await _database.OpenConnectionAsync();
+
+                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
+
+                if (reader.HasRows == false) return null;
+
+                Legat legat = null;
+
+                while (await reader.ReadAsync())
+                {
+                    legat = new(
+                        id: reader.GetInt64(0),
+                        person: new Person(
+                            firstName: reader.GetString(1),
+                            lastName: reader.GetString(2),
+                            eMail: reader.GetString(3),
+                            address: new Address(
+                                roadName: reader.GetString(4),
+                                houseNumber: int.Parse(reader.GetString(5)),
+                                zipNumber: reader.GetString(6),
+                                city: reader.GetString(7)),
+                            education: new Education(
+                                youthEducation: reader.GetString(8),
+                                ongoinEducation: reader.GetString(9),
+                                placeOfEducation: reader.GetString(10))),
+                        reasonForSearch: reader.GetString(11),
+                        wishedAmount: int.Parse(reader.GetString(12)),
+                        budget: reader.GetString(13),
+                        dateFrom: reader.GetDateTime(14),
+                        dateTo: reader.GetDateTime(15),
+                        isSearchedAlready: reader.GetString(16),
+                        knowledgeOfOtherSearch: reader.GetString(17),
+                        additionalInfo: reader.GetString(18),
+                        todaysDate: reader.GetDateTime(19)
+                        );
+                }
+                return legat;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
+
+
+
         }
 
-        public Task Update(Legat updateEntity)
+        public async Task Update(Legat updateEntity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"UPDATE `nybyesfo_nybyesfond`.`wordpress_ansoeg` 
+                                SET
+                                `first_name` = @firstName,
+                                `last_name` = @lastName,
+                                `e_mail` = @eMail,
+                                `road_name` = @roadName,
+                                `house_number` = @houseNumber,
+                                `zip_number` = @zipNumber,
+                                `city` = @city,
+                                `youth_education` = @youthEducation,
+                                `ongoing_education` = @ongoingEducation,
+                                `place_of_education` = @placeOfEducation>,
+                                `reason_for_search` = @reasonForSearch,
+                                `wished_amount` = @wishedAmount,
+                                `budget` = @budget,
+                                `date_from` = @dateFrom,
+                                `date_to` = @dateTo,
+                                `is_searched_already` = @isSearchedAlready,
+                                `knowledge_of_other_search` = @knowledgeOfOtherSearch,
+                                `additional_info` = @additionalInfo,
+                                `todays_date` = @todaysDate
+                                WHERE `ansoeg_id` = @id;",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                cmd.Parameters.AddWithValue("@firstName", updateEntity.Person.FirstName);
+                cmd.Parameters.AddWithValue("@lastName", updateEntity.Person.LastName);
+                cmd.Parameters.AddWithValue("@eMail", updateEntity.Person.eMail);
+                cmd.Parameters.AddWithValue("@roadName", updateEntity.Person.Address.Roadname);
+                cmd.Parameters.AddWithValue("@houseNumber", updateEntity.Person.Address.HouseNumber.ToString());
+                cmd.Parameters.AddWithValue("@zipNumber", updateEntity.Person.Address.ZipNumber);
+                cmd.Parameters.AddWithValue("@city", updateEntity.Person.Address.City);
+                cmd.Parameters.AddWithValue("@youthEducation", updateEntity.Person.Education.YouthEducation);
+                cmd.Parameters.AddWithValue("@ongoingEducation", updateEntity.Person.Education.OngoingEducation);
+                cmd.Parameters.AddWithValue("@placeOfEducation", updateEntity.Person.Education.PlaceOfEducation);
+                cmd.Parameters.AddWithValue("@reasonForSearch", updateEntity.ReasonForSearch);
+                cmd.Parameters.AddWithValue("@wishedAmount", updateEntity.WishedAmount.ToString());
+                cmd.Parameters.AddWithValue("@budget", updateEntity.Budget);
+                cmd.Parameters.AddWithValue("@dateFrom", updateEntity.DateFrom);
+                cmd.Parameters.AddWithValue("@dateTo", updateEntity.DateTo);
+                cmd.Parameters.AddWithValue("@isSearchedAlready", updateEntity.IsSearchedAlready);
+                cmd.Parameters.AddWithValue("@knowledgeOfOtherSearch", updateEntity.KnowledgeOfOtherSearch);
+                cmd.Parameters.AddWithValue("@additionalInfo", updateEntity.AdditionalInfo);
+                cmd.Parameters.AddWithValue("@todaysDate", updateEntity.TodaysDate);
+
+                await _database.OpenConnectionAsync();
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
         }
     }
 }

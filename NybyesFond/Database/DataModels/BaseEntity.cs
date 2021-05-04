@@ -8,13 +8,13 @@ namespace DataAccess.DataModels
 {
     public abstract class BaseEntity
     {
-        private readonly int _id;
+        private readonly long _id;
 
-        protected BaseEntity(int id = 0)
+        protected BaseEntity(long id = 0)
         {
             _id = id;
         }
 
-        public int Id { get { return _id; } }
+        public long Id { get { return _id; } }
     }
 }

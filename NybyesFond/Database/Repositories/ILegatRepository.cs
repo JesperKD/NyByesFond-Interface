@@ -14,6 +14,6 @@ namespace DataAccess.Repositories
         /// </summary>
         /// <param name="existingDataCount"></param>
         /// <returns></returns>
-        public bool CheckForNewRecords(int existingDataCount);
+        public Task<bool> CheckForNewRecords(long existingDataCount);
     }
 }

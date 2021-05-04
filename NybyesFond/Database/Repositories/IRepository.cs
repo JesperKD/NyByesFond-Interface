@@ -28,7 +28,7 @@ namespace DataAccess.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<T> GetById(int id);
+        public Task<T> GetById(long id);
 
         /// <summary>
         /// Get all entities
