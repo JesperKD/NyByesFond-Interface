@@ -13,7 +13,7 @@ namespace DataAccess.DataModels
     {
         private readonly Person _person;
         private readonly string _reasonForSearch;
-        private readonly int _wishedAmount;
+        private readonly string _wishedAmount;
         private readonly string _budget;
         private readonly DateTime _dateFrom;
         private readonly DateTime _dateTo;
@@ -36,7 +36,7 @@ namespace DataAccess.DataModels
         /// <param name="knowledgeOfOtherSearch">names of other fonds that have been searched from</param>
         /// <param name="additionalInfo"></param>
         /// <param name="todaysDate">Todays Date</param>
-        public Legat(Person person, string reasonForSearch, int wishedAmount, string budget, DateTime dateFrom, DateTime dateTo, string isSearchedAlready, string knowledgeOfOtherSearch, string additionalInfo, DateTime todaysDate, long id = 0) : base(id)
+        public Legat(Person person, string reasonForSearch, string wishedAmount, string budget, DateTime dateFrom, DateTime dateTo, string isSearchedAlready, string knowledgeOfOtherSearch, string additionalInfo, DateTime todaysDate, long id = 0) : base(id)
         {
             _person = person;
             _reasonForSearch = reasonForSearch;
@@ -54,7 +54,7 @@ namespace DataAccess.DataModels
 
         public string ReasonForSearch { get {return _reasonForSearch; } }
 
-        public int WishedAmount {
+        public string WishedAmount {
             get
             {
                 return _wishedAmount;

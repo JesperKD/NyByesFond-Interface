@@ -76,7 +76,7 @@ namespace DataAccess.Repositories
 
                 cmd.Parameters.AddWithValue("@first_name", createEntity.Person.FirstName);
                 cmd.Parameters.AddWithValue("@last_name", createEntity.Person.LastName);
-                cmd.Parameters.AddWithValue("@e_mail", createEntity.Person.eMail);
+                cmd.Parameters.AddWithValue("@e_mail", createEntity.Person.EMail);
                 cmd.Parameters.AddWithValue("@road_name", createEntity.Person.Address.Roadname);
                 cmd.Parameters.AddWithValue("@house_number", createEntity.Person.Address.HouseNumber.ToString());
                 cmd.Parameters.AddWithValue("@zip_number", createEntity.Person.Address.ZipNumber);
@@ -163,7 +163,7 @@ namespace DataAccess.Repositories
                             eMail: reader.GetString(3),
                             address: new Address(
                                 roadName: reader.GetString(4),
-                                houseNumber: int.Parse(reader.GetString(5)),
+                                houseNumber: reader.GetString(5),
                                 zipNumber: reader.GetString(6),
                                 city: reader.GetString(7)),
                             education: new Education(
@@ -171,7 +171,7 @@ namespace DataAccess.Repositories
                                 ongoinEducation: reader.GetString(9),
                                 placeOfEducation: reader.GetString(10))),
                         reasonForSearch: reader.GetString(11),
-                        wishedAmount: int.Parse(reader.GetString(12)),
+                        wishedAmount: reader.GetString(12),
                         budget: reader.GetString(13),
                         dateFrom: reader.GetDateTime(14),
                         dateTo: reader.GetDateTime(15),
@@ -185,8 +185,9 @@ namespace DataAccess.Repositories
                 }
                 return legats;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex);
                 throw;
             }
             finally
@@ -227,7 +228,7 @@ namespace DataAccess.Repositories
                             eMail: reader.GetString(3),
                             address: new Address(
                                 roadName: reader.GetString(4),
-                                houseNumber: int.Parse(reader.GetString(5)),
+                                houseNumber: reader.GetString(5),
                                 zipNumber: reader.GetString(6),
                                 city: reader.GetString(7)),
                             education: new Education(
@@ -235,7 +236,7 @@ namespace DataAccess.Repositories
                                 ongoinEducation: reader.GetString(9),
                                 placeOfEducation: reader.GetString(10))),
                         reasonForSearch: reader.GetString(11),
-                        wishedAmount: int.Parse(reader.GetString(12)),
+                        wishedAmount: reader.GetString(12),
                         budget: reader.GetString(13),
                         dateFrom: reader.GetDateTime(14),
                         dateTo: reader.GetDateTime(15),
@@ -296,7 +297,7 @@ namespace DataAccess.Repositories
 
                 cmd.Parameters.AddWithValue("@firstName", updateEntity.Person.FirstName);
                 cmd.Parameters.AddWithValue("@lastName", updateEntity.Person.LastName);
-                cmd.Parameters.AddWithValue("@eMail", updateEntity.Person.eMail);
+                cmd.Parameters.AddWithValue("@eMail", updateEntity.Person.EMail);
                 cmd.Parameters.AddWithValue("@roadName", updateEntity.Person.Address.Roadname);
                 cmd.Parameters.AddWithValue("@houseNumber", updateEntity.Person.Address.HouseNumber.ToString());
                 cmd.Parameters.AddWithValue("@zipNumber", updateEntity.Person.Address.ZipNumber);

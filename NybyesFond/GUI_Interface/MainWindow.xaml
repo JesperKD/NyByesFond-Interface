@@ -5,8 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI_Interface"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="NyByesFond Interface" Height="720" Width="1200" ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <SolidColorBrush x:Key="MainBackground" Color="#363640"/>
+        <SolidColorBrush x:Key="DataGridLineColor" Color="#5C5C64"/>
+        <SolidColorBrush x:Key="DataGridHeaderText" Color="#9E9EA3"/>
+        <SolidColorBrush x:Key="DataGridBackground" Color="#393943"/>
+        <SolidColorBrush x:Key="DataGridCellText" Color="#DDDDDF"/>
 
+
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DataGridLineColor}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DataGridLineColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Visible"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="MaxWidth" Value="1000"/>
+
+        </Style>
+        
+        <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+            <Setter Property="Padding" Value="10, 10, 10, 10"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
+        
+    </Window.Resources>
+    
+    
+    <Grid Name="MainGrid" Background="{StaticResource MainBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200px"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40px"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid x:Name="LegatDG" Grid.Column="1" Grid.Row="1" Style="{StaticResource DataGridStyle}" >
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+
+                    <Setter Property="FontSize" Value="18"/>
+                    <Setter Property="Foreground" Value="{StaticResource DataGridHeaderText}"/>
+                    <Setter Property="Padding" Value="10,10,10,10"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
+                    <Setter Property="BorderThickness" Value="1,0,1,1"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource DataGridLineColor}"/>
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#37EFBA"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Trigger>
+
+                    </Style.Triggers>
+
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Foreground" Value="{StaticResource DataGridCellText}"/>
+                    <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </DataGrid.CellStyle>
+            
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+
+                    <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
+                    <Setter Property="BorderThickness" Value="1,0,0,0"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource DataGridLineColor}"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    
+                </Style>
+            </DataGrid.RowStyle>
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Navn" Binding="{Binding Person.FullName}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="E-Mail" Binding="{Binding Person.EMail}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Adresse" Binding="{Binding Person.Address.FullAddress}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Ungdomsuddannelsesinstitution" Binding="{Binding Person.Education.YouthEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Igangværende uddannelse" Binding="{Binding Person.Education.OngoingEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Uddannelsesinstitution" Binding="{Binding Person.Education.PlaceOfEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <!--<DataGridTextColumn Header="Formål med ansøgningen" Binding="{Binding ReasonForSearch}"/>-->
+                <DataGridTextColumn Header="Ansøgt beløb" Binding="{Binding WishedAmount}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <!--<DataGridTextColumn Header="Budget" Binding="{Binding Budget}"/>-->
+                <DataGridTextColumn Header="Beløbet ønskes anvendt fra" Binding="{Binding DateFrom, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Beløbet ønskes anvendt til" Binding="{Binding DateTo, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="Allerede søgt" Binding="{Binding IsSearchedAlready}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <!--<DataGridTextColumn Header="Forventes anden støtte" Binding="{Binding KnowledgeOfOtherSearch}"/>-->
+                <!--<DataGridTextColumn Header="Yderligere Information" Binding="{Binding AdditionalInfo}"/>-->
+                <DataGridTextColumn Header="Dags dato" Binding="{Binding TodaysDate, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

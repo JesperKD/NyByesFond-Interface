@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataModels;
 using DataAccess.Repositories;
+using GUI_Interface.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,40 +23,29 @@ namespace GUI_Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ILegatRepository _legatRepository;
+        private readonly LegatViewModel _legatViewModel;
 
-        public MainWindow(ILegatRepository legatRepository)
+        public MainWindow(LegatViewModel legatViewModel)
         {
+            _legatViewModel = legatViewModel;
+            _legatViewModel.RemoveTest();
+            GetLegats();
             InitializeComponent();
-            _legatRepository = legatRepository;
 
-
-            try
-            {
-                Task.Run(async () =>
-                    {
-                        await CreateLegat();
-                    });
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            SetDataGrid();
         }
 
-
-        public async Task CreateLegat()
+        private void SetDataGrid()
         {
-            await _legatRepository.Create(
-                new DataAccess.DataModels.Legat(
-                    new Person("Rasmus", "Hedeland", "DinMor@Gmail.COm", 
-                                new Address("BruhGade", 2, "5960", "ringsted"),
-                                new Education("stx", "htx", "MinMor")),
-                    "jeg kan godt lide epneg", 23232323, "det dejligt med lkajg", DateTime.Now, DateTime.Now.Add(TimeSpan.FromDays(20)), "Ej søgt", "Nuuu", "true", DateTime.Now 
-                    )
-                );
+            var result = _legatViewModel.Legats;
+            LegatDG.ItemsSource = result;
+            LegatDG.IsReadOnly = true;
         }
 
-    } 
+        async void GetLegats()
+        {
+            await _legatViewModel.GetAllLegats();
+        }
+
+    }
 }

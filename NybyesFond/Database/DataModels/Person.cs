@@ -38,7 +38,7 @@ namespace DataAccess.DataModels
         public string FullName { get { return $"{_firstName} {_lastName}"; } }
         public string FirstName { get { return _firstName; } }
         public string LastName { get { return _lastName; } }
-        public string eMail { get { return _eMail; } }
+        public string EMail { get { return _eMail; } }
         public Address Address { get { return _address; } }
         public Education Education { get { return _education; } }
 

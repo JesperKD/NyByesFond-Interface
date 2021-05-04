@@ -1,5 +1,6 @@
 ﻿using DataAccess.Database;
 using DataAccess.Repositories;
+using GUI_Interface.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -46,7 +47,11 @@ namespace GUI_Interface
 
             services.AddScoped<ILegatRepository, LegatRepository>();
             services.AddScoped<IDatabase, MySqlDatabase>();
-            
+
+            services.AddScoped<LegatViewModel>();
+
+
+
             services.AddTransient<MainWindow>();
         }
     }
