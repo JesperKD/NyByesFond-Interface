@@ -57,7 +57,6 @@ namespace DataAccess.Repositories
             {
                 await _database.CloseConnectionAsync();
             }
-
         }
 
         public async Task Create(Legat createEntity)

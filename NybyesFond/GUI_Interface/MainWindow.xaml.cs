@@ -15,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
+using System.Diagnostics;
 
 namespace GUI_Interface
 {
@@ -28,11 +30,7 @@ namespace GUI_Interface
         public MainWindow(LegatViewModel legatViewModel)
         {
             _legatViewModel = legatViewModel;
-            _legatViewModel.RemoveTest();
-            GetLegats();
             InitializeComponent();
-
-            SetDataGrid();
         }
 
         private void SetDataGrid()
@@ -42,10 +40,25 @@ namespace GUI_Interface
             LegatDG.IsReadOnly = true;
         }
 
-        async void GetLegats()
+        private async void Refresh_Button_Click(object sender, RoutedEventArgs e)
         {
+            RefreshButton.IsEnabled = false;
+
             await _legatViewModel.GetAllLegats();
+            SetDataGrid();
+
+            RefreshButton.IsEnabled = true;
         }
 
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await _legatViewModel.GetAllLegats();
+            SetDataGrid();
+        }
+
+        //private void CreateButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    _legatViewModel.CreateTest();
+        //}
     }
 }

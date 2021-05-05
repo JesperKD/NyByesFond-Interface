@@ -47,10 +47,7 @@ namespace GUI_Interface
 
             services.AddScoped<ILegatRepository, LegatRepository>();
             services.AddScoped<IDatabase, MySqlDatabase>();
-
             services.AddScoped<LegatViewModel>();
-
-
 
             services.AddTransient<MainWindow>();
         }

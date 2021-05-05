@@ -4,14 +4,5 @@
              xmlns:local="clr-namespace:GUI_Interface"
              Startup="OnStartup">
     <Application.Resources>
-        <Style TargetType="DataGrid" x:Key="HeaderText">
-
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Foreground" Value="#9E9EA3"/>
-            <Setter Property="Padding" Value="10,10,10,10"/>
-
-
-
-        </Style>
     </Application.Resources>
 </Application>
