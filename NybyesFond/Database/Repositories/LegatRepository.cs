@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"SELECT COUNT(`ansoeg_id`) FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+                    CommandText = @"SELECT COUNT(`ansoeg_id`) FROM `nybyesfo_db`.`wordpress_ansoeg`;",
 
                     CommandType = CommandType.Text,
                     Connection = ((MySqlDatabase)_database).SqlConnection
@@ -65,7 +65,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"INSERT INTO `nybyesfo_nybyesfond`.`wordpress_ansoeg`
+                    CommandText = @"INSERT INTO `nybyesfo_db`.`wordpress_ansoeg`
                                     (`first_name`, `last_name`,`e_mail`, `road_name`, `house_number`, `zip_number`, `city`, `youth_education`, `ongoing_education`, `place_of_education`, `reason_for_search`, `wished_amount`, `budget`, `date_from`, `date_to`, `is_searched_already`, `knowledge_of_other_search`, `additional_info`,`todays_date`)
                                      VALUES (@first_name, @last_name, @e_mail, @road_name, @house_number, @zip_number, @city, @youth_education, @ongoing_education, @place_of_education, @reason_for_search, @wished_amount, @budget, @date_from, @date_to, @is_searched_already, @knowledge_of_other_search, @additional_info, @todays_date)",
 
@@ -112,7 +112,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"DELETE FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+                    CommandText = @"DELETE FROM `nybyesfo_db`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
 
                     CommandType = CommandType.Text,
                     Connection = ((MySqlDatabase)_database).SqlConnection
@@ -138,7 +138,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+                    CommandText = @"SELECT * FROM `nybyesfo_db`.`wordpress_ansoeg`;",
 
                     CommandType = CommandType.Text,
                     Connection = ((MySqlDatabase)_database).SqlConnection
@@ -201,7 +201,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+                    CommandText = @"SELECT * FROM `nybyesfo_db`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
 
                     CommandType = CommandType.Text,
                     Connection = ((MySqlDatabase)_database).SqlConnection
@@ -267,7 +267,7 @@ namespace DataAccess.Repositories
             {
                 using MySqlCommand cmd = new()
                 {
-                    CommandText = @"UPDATE `nybyesfo_nybyesfond`.`wordpress_ansoeg` 
+                    CommandText = @"UPDATE `nybyesfo_db`.`wordpress_ansoeg` 
                                 SET
                                 `first_name` = @firstName,
                                 `last_name` = @lastName,
