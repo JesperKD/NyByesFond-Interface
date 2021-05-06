@@ -36,6 +36,7 @@ namespace DataAccess.Database
         }
 
         public abstract Task CloseConnectionAsync();
+
         public abstract Task OpenConnectionAsync();
 
 

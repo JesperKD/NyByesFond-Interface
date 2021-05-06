@@ -36,7 +36,6 @@ namespace DataAccess.DataModels
         public string HouseNumber { get { return _houseNumber; } }
         public string ZipNumber{ get { return _zipNumber; } }
         public string City { get { return _city; } }
-
         public string FullAddress { get { return $"{Roadname} {HouseNumber}, {ZipNumber} {City}"; } }
 
     }

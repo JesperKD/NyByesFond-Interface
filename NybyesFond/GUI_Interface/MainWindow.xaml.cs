@@ -43,65 +43,65 @@ namespace GUI_Interface
 
         private async void Refresh_Button_Click(object sender, RoutedEventArgs e)
         {
-            RefreshButton.IsEnabled = false;
+            try
+            {
+                RefreshButton.IsEnabled = false;
 
-            await _legatViewModel.CreateTest();
-            await _legatViewModel.GetAllLegats();
-            SetDataGrid();
+                await _legatViewModel.CreateTest();
+                await _legatViewModel.GetAllLegats();
+                SetDataGrid();
 
-            RefreshButton.IsEnabled = true;
+                RefreshButton.IsEnabled = true;
+            }
+            catch (Exception)
+            {
+                DisplayMessage("Kunne ikke opdatere data", "FEJL", MessageBoxImage.Error);
+            }
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await _legatViewModel.GetAllLegats();
-            SetDataGrid();
+            try
+            {
+                await _legatViewModel.GetAllLegats();
+                SetDataGrid();
+            }
+            catch (Exception)
+            {
+                DisplayMessage("Kunne ikke hente data", "FEJL", MessageBoxImage.Error);
+            }
         }
 
-        private void Delete_Button_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Button_Click(object sender, RoutedEventArgs e)
         {
-            ConfirmationMessageBox();
-        }
-
-        public async void ConfirmationMessageBox()
-        {
-            Debug.WriteLine("Message is alive. Bitch.");
             try
             {
                 DeleteButton.IsEnabled = false;
-                MessageBoxResult messageBoxResult = MessageBox.Show(
-                       "Godkend sletning af ALT data?",
-                       "Godkendelses Vindue",
-                       MessageBoxButton.YesNo,
-                       MessageBoxImage.Warning,
-                       defaultResult: MessageBoxResult.No,
-                       options: MessageBoxOptions.ServiceNotification
-                       );
+                MessageBoxResult messageBoxResult = DisplayMessage(
+                                   "Godkend sletning af ALT data?",
+                                   "Godkendelses Vindue",
+                                   MessageBoxImage.Warning,
+                                   MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     await _legatViewModel.TruncateData();
-                    Debug.WriteLine("Result is yes now truncating data. You bitch!");
                 }
             }
             catch (Exception)
             {
-                Debug.WriteLine("had to throw your dumb ass exception! BITCH!");
-                throw;
+                DisplayMessage("Kunne ikke hente data", "FEJL", MessageBoxImage.Error);
             }
             finally
             {
                 DeleteButton.IsEnabled = true;
                 await _legatViewModel.GetAllLegats();
                 SetDataGrid();
-                Debug.WriteLine("Finally has been reached. Bitch.");
             }
-
         }
 
-
-        //private void CreateButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    _legatViewModel.CreateTest();
-        //}
+        private static MessageBoxResult DisplayMessage(string message, string title, MessageBoxImage messageType, MessageBoxButton buttonLayout = MessageBoxButton.OK)
+        {
+            return MessageBox.Show( message, title, buttonLayout, messageType);
+        }
     }
 }

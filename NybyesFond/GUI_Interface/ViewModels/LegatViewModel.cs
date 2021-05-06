@@ -20,7 +20,6 @@ namespace GUI_Interface.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public IEnumerable<Legat> Legats { get { return _legats; } set { _legats = value; OnPropertyChanged(); } }
 
-
         public LegatViewModel(ILegatRepository legatRepository)
         {
             _legatRepository = legatRepository;
@@ -54,18 +53,15 @@ namespace GUI_Interface.ViewModels
         // The calling member's name will be used as the parameter.
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            Debug.WriteLine($"Amounts of legats loaded: {Legats.Count()}");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
-
 
         //public async void RemoveTest()
         //{
         //    Legat legat = new(null, null, null, null, DateTime.Now, DateTime.Now, null, null, null, DateTime.Now, 6);
         //    await _legatRepository.Delete(legat);
         //}
-
+       
         public async Task CreateTest()
         {
             Education brrrrruh = new("STKX", "HTKX", "ZBQ");
