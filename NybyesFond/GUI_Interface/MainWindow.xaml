@@ -6,7 +6,7 @@
         Loaded="Window_Loaded"
         xmlns:local="clr-namespace:GUI_Interface"
         mc:Ignorable="d"
-        Title="NyByesFond" Height="720" Width="1200" ResizeMode="NoResize">
+        Title="NyByesFond" MinHeight="720" MinWidth="1200" WindowStartupLocation="CenterScreen" >
 
     <Window.Resources>
         <SolidColorBrush x:Key="MainBackground" Color="#363640"/>
@@ -37,8 +37,10 @@
             <Setter Property="HorizontalScrollBarVisibility" Value="Visible"/>
 
             <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="MaxWidth" Value="985"/>
-            <Setter Property="MaxHeight" Value="620"/>
+            <Setter Property="MinWidth" Value="985"/>
+            <Setter Property="MinHeight" Value="620"/>
+            <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=MainGrid}"/>
+            <Setter Property="MaxHeight" Value="{Binding ActualHeight, ElementName=MainGrid}"/>
 
         </Style>
 
@@ -115,15 +117,15 @@
 
     <Grid Name="MainGrid" Background="{StaticResource MainBackground}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200px"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="8*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60px"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Content="Ansøgnings Oversigt" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="28" Foreground="{StaticResource HoverText}" Margin="25,0,25,10"/>
+        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Content="Ansøgnings Oversigt" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" Foreground="{StaticResource HoverText}" Margin="0,-10,0,0"/>
 
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.RowDefinitions>
@@ -143,7 +145,7 @@
                 </Button>
             </StackPanel>
             <StackPanel x:Name="ButtonPanel2" Grid.Row="6" Orientation="Vertical">
-                <Button x:Name="DeleteButton" Style="{StaticResource DeleteButtonStyle}" Height="50" VerticalAlignment="Bottom" Margin="25,0,25,10" Click="Refresh_Button_Click">
+                <Button x:Name="DeleteButton" Style="{StaticResource DeleteButtonStyle}" Height="50" VerticalAlignment="Bottom" Margin="25,0,25,10" Click="Delete_Button_Click">
                     <StackPanel>
                         <TextBlock Text="Slet" FontSize="20"/>
                     </StackPanel>
@@ -152,7 +154,7 @@
         </Grid>
         
 
-        <DataGrid x:Name="LegatDG" Grid.Column="1" Grid.Row="1" Style="{StaticResource DataGridStyle}" Grid.ColumnSpan="2" >
+        <DataGrid x:Name="LegatDG" Grid.Column="1" Grid.Row="1" Style="{StaticResource DataGridStyle}">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
 

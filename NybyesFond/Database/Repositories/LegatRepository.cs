@@ -261,6 +261,31 @@ namespace DataAccess.Repositories
 
         }
 
+        public async Task TruncateData()
+        {
+            try
+            {
+                using MySqlCommand cmd = new()
+                {
+                    CommandText = @"TRUNCATE TABLE `wordpress_ansoeg`",
+
+                    CommandType = CommandType.Text,
+                    Connection = ((MySqlDatabase)_database).SqlConnection
+                };
+
+                await _database.OpenConnectionAsync();
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                await _database.CloseConnectionAsync();
+            }
+        }
+
         public async Task Update(Legat updateEntity)
         {
             try

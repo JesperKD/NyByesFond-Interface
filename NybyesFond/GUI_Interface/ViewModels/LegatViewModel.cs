@@ -45,6 +45,11 @@ namespace GUI_Interface.ViewModels
             }
         }
 
+        public async Task TruncateData()
+        {
+            await _legatRepository.TruncateData();
+        }
+
         // Create the OnPropertyChanged method to raise the event
         // The calling member's name will be used as the parameter.
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -61,19 +66,19 @@ namespace GUI_Interface.ViewModels
         //    await _legatRepository.Delete(legat);
         //}
 
-        //public async void CreateTest()
-        //{
-        //    Education brrrrruh = new("STKX", "HTKX", "ZBQ");
-        //    Address ladnuv = new("lolgade", "12", "1212", "BruhTown");
-        //    Person spassssserperson = new("Bruhtias", "bruhsilicys", "bruh@bruhmail.bruh", ladnuv, brrrrruh);
-        //    Legat legat = new(spassssserperson, "det nice", "121212", "bruh", DateTime.Now, DateTime.Now, "lol", "bruh", "lalalalalalalala", DateTime.Now);
+        public async Task CreateTest()
+        {
+            Education brrrrruh = new("STKX", "HTKX", "ZBQ");
+            Address ladnuv = new("lolgade", "12", "1212", "BruhTown");
+            Person spassssserperson = new("Bruhtias", "bruhsilicys", "bruh@bruhmail.bruh", ladnuv, brrrrruh);
+            Legat legat = new(spassssserperson, "det nice", "121212", "bruh", DateTime.Now, DateTime.Now, "lol", "bruh", "lalalalalalalala", DateTime.Now);
 
-        //    for (int i = 0; i < 101; i++)
-        //    {
-        //        await _legatRepository.Create(legat);
+            for (int i = 0; i < 101; i++)
+            {
+                await _legatRepository.Create(legat);
 
-        //    }
-        //}
+            }
+        }
 
     }
 }

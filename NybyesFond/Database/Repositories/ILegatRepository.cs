@@ -15,5 +15,7 @@ namespace DataAccess.Repositories
         /// <param name="existingDataCount"></param>
         /// <returns></returns>
         public Task<bool> CheckForNewRecords(long existingDataCount);
+
+        public Task TruncateData();
     }
 }
