@@ -59,7 +59,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task Create(Legat createEntity)
+        public async Task CreateAsync(Legat createEntity)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task Delete(Legat deleteEntity)
+        public async Task DeleteAsync(Legat deleteEntity)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task<IEnumerable<Legat>> GetAll()
+        public async Task<IEnumerable<Legat>> GetAllAsync()
         {
             try
             {
@@ -194,7 +194,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task<Legat> GetById(long id)
+        public async Task<Legat> GetByIdAsync(long id)
         {
             try
             {
@@ -285,7 +285,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public async Task Update(Legat updateEntity)
+        public async Task UpdateAsync(Legat updateEntity)
         {
             try
             {

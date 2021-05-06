@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataModels;
 using DataAccess.Repositories;
+using NybyesFond.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,53 +8,49 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GUI_Interface.ViewModels
 {
-    public class LegatViewModel : INotifyPropertyChanged
+    public class LegatViewModel : ViewModelBase
     {
         private readonly ILegatRepository _legatRepository;
-        private IEnumerable<Legat> _legats = new List<Legat>();
+        private ObservableCollection<Legat> _observableLegats;     
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public IEnumerable<Legat> Legats { get { return _legats; } set { _legats = value; OnPropertyChanged(); } }
+        /// <summary>
+        /// For View Injection Purpose.
+        /// </summary>
+        public LegatViewModel() { }
 
         public LegatViewModel(ILegatRepository legatRepository)
         {
             _legatRepository = legatRepository;
+            _observableLegats = new();
         }
 
-        public async Task GetAllLegats()
+        public ObservableCollection<Legat> ObservableLegats
         {
-            Legats = await _legatRepository.GetAll();
-        }
-
-        public async Task<bool> RefreshCheck()
-        {
-            long nr = Legats.Count();
-
-            if (await _legatRepository.CheckForNewRecords(nr) == true )
+            get { return _observableLegats; }
+            set
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                _observableLegats = value;
+                OnPropertyChanged("ObservableLegats");
             }
         }
 
-        public async Task TruncateData()
+        internal async Task GetAllLegats()
         {
-            await _legatRepository.TruncateData();
+            var result = await Task.Run(() => _legatRepository.GetAllAsync());
+
+            foreach (Legat legat in result)
+            {
+                ObservableLegats.Add(legat);
+            }
         }
 
-        // Create the OnPropertyChanged method to raise the event
-        // The calling member's name will be used as the parameter.
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        internal async Task TruncateData()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            await Task.Run(() => _legatRepository.TruncateData());
         }
 
         //public async void RemoveTest()
@@ -61,20 +58,40 @@ namespace GUI_Interface.ViewModels
         //    Legat legat = new(null, null, null, null, DateTime.Now, DateTime.Now, null, null, null, DateTime.Now, 6);
         //    await _legatRepository.Delete(legat);
         //}
-       
-        public async Task CreateTest()
-        {
-            Education brrrrruh = new("STKX", "HTKX", "ZBQ");
-            Address ladnuv = new("lolgade", "12", "1212", "BruhTown");
-            Person spassssserperson = new("Bruhtias", "bruhsilicys", "bruh@bruhmail.bruh", ladnuv, brrrrruh);
-            Legat legat = new(spassssserperson, "det nice", "121212", "bruh", DateTime.Now, DateTime.Now, "lol", "bruh", "lalalalalalalala", DateTime.Now);
 
-            for (int i = 0; i < 101; i++)
-            {
-                await _legatRepository.Create(legat);
+        //internal async Task CreateTest()
+        //{
+        //    Education brrrrruh = new("STKX", "HTKX", "ZBQ");
+        //    Address ladnuv = new("lolgade", "12", "1212", "BruhTown");
+        //    Person spassssserperson = new("Bruhtias", "bruhsilicys", "bruh@bruhmail.bruh", ladnuv, brrrrruh);
+        //    Legat legat = new(spassssserperson, "det nice", "121212", "bruh", DateTime.Now, DateTime.Now, "lol", "bruh", "lalalalalalalala", DateTime.Now);
 
-            }
-        }
+        //    for (int i = 0; i < 101; i++)
+        //    {
+        //        await _legatRepository.Create(legat);
+        //    }
+        //}
 
+        //internal async Task CreateMockDataAsync(int maxCount)
+        //{
+        //    Education brrrrruh = new("STKX", "HTKX", "ZBQ");
+        //    Address ladnuv = new("lolgade", "12", "1212", "BruhTown");
+        //    Person spassssserperson = new("Bruhtias", "bruhsilicys", "bruh@bruhmail.bruh", ladnuv, brrrrruh);
+
+
+        //    for (int i = 0; i < maxCount; i++)
+        //    {
+        //        Legat legat = new(spassssserperson, "det nice", "121212", "bruh", DateTime.Now, DateTime.Now, "lol", "bruh", "lalalalalalalala", DateTime.Now, i + 1);
+        //        await Task.Delay(25);
+        //        ObservableLegats.Add(legat);
+        //    }
+        //}
+
+        //internal async Task DeleteMockDataAsync()
+        //{
+        //    await Task.Delay(25);
+
+        //    ObservableLegats.Clear();
+        //}
     }
 }

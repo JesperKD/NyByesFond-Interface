@@ -1,22 +1,9 @@
-﻿using DataAccess.DataModels;
-using DataAccess.Repositories;
-using GUI_Interface.ViewModels;
+﻿using GUI_Interface.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
-using System.Diagnostics;
 
 namespace GUI_Interface
 {
@@ -26,66 +13,38 @@ namespace GUI_Interface
     public partial class MainWindow : Window
     {
         private readonly LegatViewModel _legatViewModel;
+        private readonly DataGrid _legatDataGrid;
 
         public MainWindow(LegatViewModel legatViewModel)
         {
-            _legatViewModel = legatViewModel;
             InitializeComponent();
 
+            _legatViewModel = legatViewModel;
+            _legatDataGrid = LegatDG;
+
+            InitializeLegatDataGridProperties();
         }
 
-        private void SetDataGrid()
+        private static MessageBoxResult DisplayMessage(string message, string title, MessageBoxImage messageType, MessageBoxButton buttonLayout = MessageBoxButton.OK)
         {
-            var result = _legatViewModel.Legats;
-            LegatDG.ItemsSource = result;
-            LegatDG.IsReadOnly = true;
+            return MessageBox.Show(message, title, buttonLayout, messageType);
         }
 
-        private async void Refresh_Button_Click(object sender, RoutedEventArgs e)
+        private void InitializeLegatDataGridProperties()
         {
-            try
-            {
-                RefreshButton.IsEnabled = false;
-
-                await _legatViewModel.CreateTest();
-                await _legatViewModel.GetAllLegats();
-                SetDataGrid();
-
-                RefreshButton.IsEnabled = true;
-            }
-            catch (Exception)
-            {
-                DisplayMessage("Kunne ikke opdatere data", "FEJL", MessageBoxImage.Error);
-            }
+            _legatDataGrid.ItemsSource = _legatViewModel.ObservableLegats;
+            _legatDataGrid.AlternationCount = 2;
+            _legatDataGrid.IsReadOnly = true;
+            _legatDataGrid.Columns[0].SortDirection = System.ComponentModel.ListSortDirection.Ascending;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                await _legatViewModel.GetAllLegats();
-                SetDataGrid();
-            }
-            catch (Exception)
-            {
-                DisplayMessage("Kunne ikke hente data", "FEJL", MessageBoxImage.Error);
-            }
-        }
+                LegatDG.ItemsSource = _legatViewModel.ObservableLegats;
 
-        private async void Delete_Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                DeleteButton.IsEnabled = false;
-                MessageBoxResult messageBoxResult = DisplayMessage(
-                                   "Godkend sletning af ALT data?",
-                                   "Godkendelses Vindue",
-                                   MessageBoxImage.Warning,
-                                   MessageBoxButton.YesNo);
-                if (messageBoxResult == MessageBoxResult.Yes)
-                {
-                    await _legatViewModel.TruncateData();
-                }
+                await _legatViewModel.GetAllLegats();
             }
             catch (Exception)
             {
@@ -93,15 +52,70 @@ namespace GUI_Interface
             }
             finally
             {
-                DeleteButton.IsEnabled = true;
-                await _legatViewModel.GetAllLegats();
-                SetDataGrid();
+                Debug.WriteLine($"Windows <{this}> was loaded.");
             }
         }
 
-        private static MessageBoxResult DisplayMessage(string message, string title, MessageBoxImage messageType, MessageBoxButton buttonLayout = MessageBoxButton.OK)
+        private async void Refresh_Button_Click(object sender, RoutedEventArgs e)
         {
-            return MessageBox.Show( message, title, buttonLayout, messageType);
+            RefreshButton.IsEnabled = false;
+
+            try
+            {
+                await _legatViewModel.GetAllLegats();
+            }
+            catch (Exception)
+            {
+                DisplayMessage("Kunne ikke opdatere data", "FEJL", MessageBoxImage.Error);
+            }
+            finally
+            {
+                RefreshButton.IsEnabled = true;
+            }
         }
+
+        private async void Delete_Button_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteButton.IsEnabled = false;
+
+            MessageBoxResult messageBoxResult = DisplayMessage(
+                                   "Godkend sletning af ALT data?",
+                                   "Godkendelses Vindue",
+                                   MessageBoxImage.Warning,
+                                   MessageBoxButton.YesNo);
+
+            try
+            {
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    await _legatViewModel.TruncateData();
+                }
+            }
+            catch (Exception)
+            {
+                DisplayMessage("Kunne ikke slette data.", "FEJL", MessageBoxImage.Error);
+            }
+            finally
+            {
+                DeleteButton.IsEnabled = true;
+            }
+        }
+
+        //private async void CreateMockData_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string defaultContent = (string)MockDataButton.Content;
+
+        //    try
+        //    {
+        //        MockDataButton.Content = "Creating Mock Data...";
+
+        //        await _legatViewModel.CreateMockDataAsync(100);
+        //    }
+        //    finally
+        //    {                
+        //        MockDataButton.IsEnabled = true;
+        //        MockDataButton.Content = defaultContent;
+        //    }
+        //}
     }
 }

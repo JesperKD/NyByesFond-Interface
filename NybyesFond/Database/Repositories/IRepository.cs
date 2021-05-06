@@ -13,35 +13,35 @@ namespace DataAccess.Repositories
         /// Creates new entity
         /// </summary>
         /// <param name="createEntity"></param>
-        /// <returns></returns>
-        public Task Create(T createEntity);
+        /// <returns>A Task representing the asynchronous process.</returns>
+        public Task CreateAsync(T createEntity);
 
         /// <summary>
         /// Deletes entity
         /// </summary>
         /// <param name="deleteEntity"></param>
-        /// <returns></returns>
-        public Task Delete(T deleteEntity);
+        /// <returns>A Task representing the asynchronous process.</returns>
+        public Task DeleteAsync(T deleteEntity);
 
         /// <summary>
         /// get entity by identifier
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
-        public Task<T> GetById(long id);
+        /// <returns>A Task representing the asynchronous process.</returns>
+        public Task<T> GetByIdAsync(long id);
 
         /// <summary>
         /// Get all entities
         /// </summary>
-        /// <returns></returns>
-        public Task<IEnumerable<T>> GetAll();
+        /// <returns>A Task representing the asynchronous process.</returns>
+        public Task<IEnumerable<T>> GetAllAsync();
 
         /// <summary>
         /// update entity
         /// </summary>
         /// <param name="updateEntity"></param>
-        /// <returns></returns>
-        public Task Update(T updateEntity);
+        /// <returns>A Task representing the asynchronous process.</returns>
+        public Task UpdateAsync(T updateEntity);
 
     }
 }
