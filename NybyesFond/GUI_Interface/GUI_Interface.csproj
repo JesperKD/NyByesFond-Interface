@@ -4,6 +4,16 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <Authors>Jesper Deleurand, Tobias Rosenvinge</Authors>
+    <Company>ZBC Ringsted SKP</Company>
+    <Product>Ansøgnings Oversigts App</Product>
+    <PackageId>NybyesFond</PackageId>
+    <PackageIcon>Icon.ico</PackageIcon>
+    <NeutralLanguage>da-DK</NeutralLanguage>
+    <AssemblyName>NybyesFond</AssemblyName>
+    <RootNamespace>NybyesFond</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +28,11 @@
 
   <ItemGroup>
     <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Icon.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
