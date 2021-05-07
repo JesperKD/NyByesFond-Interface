@@ -25,9 +25,9 @@ namespace GUI_Interface
             InitializeLegatDataGridProperties();
         }
 
-        private static MessageBoxResult DisplayMessage(string message, string title, MessageBoxImage messageType, MessageBoxButton buttonLayout = MessageBoxButton.OK)
+        private MessageBoxResult DisplayMessage(string message, string title, MessageBoxImage messageType, MessageBoxButton buttonLayout = MessageBoxButton.OK)
         {
-            return MessageBox.Show(message, title, buttonLayout, messageType);
+            return MessageBox.Show(owner: this, message, title, buttonLayout, messageType);
         }
 
         private void InitializeLegatDataGridProperties()
@@ -48,11 +48,18 @@ namespace GUI_Interface
             }
             catch (Exception)
             {
-                DisplayMessage("Kunne ikke hente data", "FEJL", MessageBoxImage.Error);
-            }
-            finally
-            {
-                Debug.WriteLine($"Windows <{this}> was loaded.");
+                var messageResult = DisplayMessage("Noget gik galt i opstart af programmet, klik OK for at genstarte eller CANCEL for at lukke programmet. \n\nHvis problemet opstår flere gange, kontakt systemejeren.", "FEJL", MessageBoxImage.Error, MessageBoxButton.OKCancel);
+
+                if (messageResult == MessageBoxResult.OK)
+                {
+                    var currentExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+                    Process.Start(currentExecutablePath);
+                    Application.Current.Shutdown();
+
+                    return;
+                }
+
+                Application.Current.Shutdown();
             }
         }
 
@@ -117,6 +124,10 @@ namespace GUI_Interface
                 TestDataButton.Content = "Opretter Test data..";
 
                 await _legatViewModel.CreateTestDataAsync(100);
+            }
+            catch (Exception)
+            {
+                DisplayMessage("Handling blev afbrudt.", "INFO", MessageBoxImage.Information);
             }
             finally
             {

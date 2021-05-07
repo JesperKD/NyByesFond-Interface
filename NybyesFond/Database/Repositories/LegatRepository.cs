@@ -23,275 +23,166 @@ namespace DataAccess.Repositories
 
         public async Task<bool> CheckForNewRecords(long existingDataCount)
         {
-            try
+            var cmdText = @"SELECT COUNT(`ansoeg_id`) FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;";
+
+            using var dataReader = await _database.GetDataReaderAsync(cmdText);
+
+            if (dataReader.HasRows == false) return false;
+
+            while (await dataReader.ReadAsync())
             {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"SELECT COUNT(`ansoeg_id`) FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+                long currentDataCount = dataReader.GetInt64(0);
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
-
-                await _database.OpenConnectionAsync();
-
-                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
-
-                if (reader.HasRows == false) return false;
-
-                long rowCount = 0;
-
-                while(await reader.ReadAsync())
-                {
-                    rowCount = reader.GetInt64(0);
-                }
-
-                if (existingDataCount < rowCount || existingDataCount > rowCount) return true;
-                return false;
+                if (ThereIsNewRecords(existingDataCount, currentDataCount)) return true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+
+            // If No new Records are found.
+            return false;
         }
 
         public async Task CreateAsync(Legat createEntity)
         {
-            try
-            {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"INSERT INTO `nybyesfo_nybyesfond`.`wordpress_ansoeg`
+            string cmdText = @"INSERT INTO `nybyesfo_nybyesfond`.`wordpress_ansoeg`
                                     (`first_name`, `last_name`,`e_mail`, `road_name`, `house_number`, `zip_number`, `city`, `youth_education`, `ongoing_education`, `place_of_education`, `reason_for_search`, `wished_amount`, `budget`, `date_from`, `date_to`, `is_searched_already`, `knowledge_of_other_search`, `additional_info`,`todays_date`)
-                                     VALUES (@first_name, @last_name, @e_mail, @road_name, @house_number, @zip_number, @city, @youth_education, @ongoing_education, @place_of_education, @reason_for_search, @wished_amount, @budget, @date_from, @date_to, @is_searched_already, @knowledge_of_other_search, @additional_info, @todays_date)",
+                                     VALUES (@first_name, @last_name, @e_mail, @road_name, @house_number, @zip_number, @city, @youth_education, @ongoing_education, @place_of_education, @reason_for_search, @wished_amount, @budget, @date_from, @date_to, @is_searched_already, @knowledge_of_other_search, @additional_info, @todays_date)";
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
-
-                cmd.Parameters.AddWithValue("@first_name", createEntity.Person.FirstName);
-                cmd.Parameters.AddWithValue("@last_name", createEntity.Person.LastName);
-                cmd.Parameters.AddWithValue("@e_mail", createEntity.Person.EMail);
-                cmd.Parameters.AddWithValue("@road_name", createEntity.Person.Address.Roadname);
-                cmd.Parameters.AddWithValue("@house_number", createEntity.Person.Address.HouseNumber.ToString());
-                cmd.Parameters.AddWithValue("@zip_number", createEntity.Person.Address.ZipNumber);
-                cmd.Parameters.AddWithValue("@city", createEntity.Person.Address.City);
-                cmd.Parameters.AddWithValue("@youth_education", createEntity.Person.Education.YouthEducation);
-                cmd.Parameters.AddWithValue("@ongoing_education", createEntity.Person.Education.OngoingEducation);
-                cmd.Parameters.AddWithValue("@place_of_education", createEntity.Person.Education.PlaceOfEducation);
-                cmd.Parameters.AddWithValue("@reason_for_search", createEntity.ReasonForSearch);
-                cmd.Parameters.AddWithValue("@wished_amount", createEntity.WishedAmount.ToString());
-                cmd.Parameters.AddWithValue("@budget", createEntity.Budget);
-                cmd.Parameters.AddWithValue("@date_from", createEntity.DateFrom);
-                cmd.Parameters.AddWithValue("@date_to", createEntity.DateTo);
-                cmd.Parameters.AddWithValue("@is_searched_already", createEntity.IsSearchedAlready);
-                cmd.Parameters.AddWithValue("@knowledge_of_other_search", createEntity.KnowledgeOfOtherSearch);
-                cmd.Parameters.AddWithValue("@additional_info", createEntity.AdditionalInfo);
-                cmd.Parameters.AddWithValue("@todays_date", createEntity.TodaysDate);
-
-                await _database.OpenConnectionAsync();
-                await cmd.ExecuteNonQueryAsync();
-            }
-            catch (Exception)
+            IDictionary<string, object> sqlParams = new Dictionary<string, object>
             {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+                { "@first_name", createEntity.Person.FirstName },
+                { "@last_name", createEntity.Person.LastName },
+                { "@e_mail", createEntity.Person.EMail },
+                { "@road_name", createEntity.Person.Address.Roadname },
+                { "@house_number", createEntity.Person.Address.HouseNumber.ToString() },
+                { "@zip_number", createEntity.Person.Address.ZipNumber },
+                { "@city", createEntity.Person.Address.City },
+                { "@youth_education", createEntity.Person.Education.YouthEducation },
+                { "@ongoing_education", createEntity.Person.Education.OngoingEducation },
+                { "@place_of_education", createEntity.Person.Education.PlaceOfEducation },
+                { "@reason_for_search", createEntity.ReasonForSearch },
+                { "@wished_amount", createEntity.WishedAmount.ToString() },
+                { "@budget", createEntity.Budget },
+                { "@date_from", createEntity.DateFrom },
+                { "@date_to", createEntity.DateTo },
+                { "@is_searched_already", createEntity.IsSearchedAlready },
+                { "@knowledge_of_other_search", createEntity.KnowledgeOfOtherSearch },
+                { "@additional_info", createEntity.AdditionalInfo },
+                { "@todays_date", createEntity.TodaysDate }
+            };
+
+            await _database.ExecuteNonQueryAsync(cmdText, sqlParams);
         }
 
         public async Task DeleteAsync(Legat deleteEntity)
         {
-            try
-            {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"DELETE FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+            string cmdText = @"DELETE FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;";
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
+            IDictionary<string, object> sqlParams = new Dictionary<string, object>
+            {
+                { "@id", deleteEntity.Id }
+            };
 
-                cmd.Parameters.AddWithValue("@id", deleteEntity.Id);
-                await _database.OpenConnectionAsync();
-                await cmd.ExecuteNonQueryAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+            await _database.ExecuteNonQueryAsync(cmdText, sqlParams);
         }
 
         public async Task<IEnumerable<Legat>> GetAllAsync()
         {
-            try
+            string cmdText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;";
+
+            using var dataReader = await _database.GetDataReaderAsync(cmdText);
+
+            if (dataReader.HasRows == false) return Enumerable.Empty<Legat>();
+
+            List<Legat> legats = new();
+
+            while (await dataReader.ReadAsync())
             {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg`;",
+                Legat temporaryLegat = new(
+                    id: dataReader.GetInt64(0),
+                    person: new Person(
+                        firstName: dataReader.GetString(1),
+                        lastName: dataReader.GetString(2),
+                        eMail: dataReader.GetString(3),
+                        address: new Address(
+                            roadName: dataReader.GetString(4),
+                            houseNumber: dataReader.GetString(5),
+                            zipNumber: dataReader.GetString(6),
+                            city: dataReader.GetString(7)),
+                        education: new Education(
+                            youthEducation: dataReader.GetString(8),
+                            ongoinEducation: dataReader.GetString(9),
+                            placeOfEducation: dataReader.GetString(10))),
+                    reasonForSearch: dataReader.GetString(11),
+                    wishedAmount: dataReader.GetString(12),
+                    budget: dataReader.GetString(13),
+                    dateFrom: dataReader.GetDateTime(14),
+                    dateTo: dataReader.GetDateTime(15),
+                    isSearchedAlready: dataReader.GetString(16),
+                    knowledgeOfOtherSearch: dataReader.GetString(17),
+                    additionalInfo: dataReader.GetString(18),
+                    todaysDate: dataReader.GetDateTime(19)
+                );
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
-
-                await _database.OpenConnectionAsync();
-
-                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
-
-                if (reader.HasRows == false) return Enumerable.Empty<Legat>();
-
-                List<Legat> legats = new();
-
-                while (await reader.ReadAsync())
-                {
-                    Legat temporaryLegat = new(
-                        id: reader.GetInt64(0),
-                        person: new Person(
-                            firstName: reader.GetString(1),
-                            lastName: reader.GetString(2),
-                            eMail: reader.GetString(3),
-                            address: new Address(
-                                roadName: reader.GetString(4),
-                                houseNumber: reader.GetString(5),
-                                zipNumber: reader.GetString(6),
-                                city: reader.GetString(7)),
-                            education: new Education(
-                                youthEducation: reader.GetString(8),
-                                ongoinEducation: reader.GetString(9),
-                                placeOfEducation: reader.GetString(10))),
-                        reasonForSearch: reader.GetString(11),
-                        wishedAmount: reader.GetString(12),
-                        budget: reader.GetString(13),
-                        dateFrom: reader.GetDateTime(14),
-                        dateTo: reader.GetDateTime(15),
-                        isSearchedAlready: reader.GetString(16),
-                        knowledgeOfOtherSearch: reader.GetString(17),
-                        additionalInfo: reader.GetString(18),
-                        todaysDate: reader.GetDateTime(19)
-                    );
-
-                    legats.Add(temporaryLegat);
-                }
-                return legats;
+                legats.Add(temporaryLegat);
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+            return legats;
         }
 
         public async Task<Legat> GetByIdAsync(long id)
         {
-            try
+            string cmdText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;";
+
+            IDictionary<string, object> sqlParams = new Dictionary<string, object>
             {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"SELECT * FROM `nybyesfo_nybyesfond`.`wordpress_ansoeg` WHERE `ansoeg_id` = @id;",
+                { "@id", id }
+            };
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
+            var dataReader = await _database.GetDataReaderAsync(cmdText, sqlParams);
 
-                cmd.Parameters.AddWithValue("@id", id);
+            if (dataReader.HasRows == false) return null;
 
-                await _database.OpenConnectionAsync();
+            Legat legat = null;
 
-                using DbDataReader reader = await cmd.ExecuteReaderAsync(behavior: CommandBehavior.CloseConnection);
-
-                if (reader.HasRows == false) return null;
-
-                Legat legat = null;
-
-                while (await reader.ReadAsync())
-                {
-                    legat = new(
-                        id: reader.GetInt64(0),
-                        person: new Person(
-                            firstName: reader.GetString(1),
-                            lastName: reader.GetString(2),
-                            eMail: reader.GetString(3),
-                            address: new Address(
-                                roadName: reader.GetString(4),
-                                houseNumber: reader.GetString(5),
-                                zipNumber: reader.GetString(6),
-                                city: reader.GetString(7)),
-                            education: new Education(
-                                youthEducation: reader.GetString(8),
-                                ongoinEducation: reader.GetString(9),
-                                placeOfEducation: reader.GetString(10))),
-                        reasonForSearch: reader.GetString(11),
-                        wishedAmount: reader.GetString(12),
-                        budget: reader.GetString(13),
-                        dateFrom: reader.GetDateTime(14),
-                        dateTo: reader.GetDateTime(15),
-                        isSearchedAlready: reader.GetString(16),
-                        knowledgeOfOtherSearch: reader.GetString(17),
-                        additionalInfo: reader.GetString(18),
-                        todaysDate: reader.GetDateTime(19)
-                        );
-                }
-                return legat;
-            }
-            catch (Exception)
+            while (await dataReader.ReadAsync())
             {
-
-                throw;
+                legat = new(
+                    id: dataReader.GetInt64(0),
+                    person: new Person(
+                        firstName: dataReader.GetString(1),
+                        lastName: dataReader.GetString(2),
+                        eMail: dataReader.GetString(3),
+                        address: new Address(
+                            roadName: dataReader.GetString(4),
+                            houseNumber: dataReader.GetString(5),
+                            zipNumber: dataReader.GetString(6),
+                            city: dataReader.GetString(7)),
+                        education: new Education(
+                            youthEducation: dataReader.GetString(8),
+                            ongoinEducation: dataReader.GetString(9),
+                            placeOfEducation: dataReader.GetString(10))),
+                    reasonForSearch: dataReader.GetString(11),
+                    wishedAmount: dataReader.GetString(12),
+                    budget: dataReader.GetString(13),
+                    dateFrom: dataReader.GetDateTime(14),
+                    dateTo: dataReader.GetDateTime(15),
+                    isSearchedAlready: dataReader.GetString(16),
+                    knowledgeOfOtherSearch: dataReader.GetString(17),
+                    additionalInfo: dataReader.GetString(18),
+                    todaysDate: dataReader.GetDateTime(19)
+                    );
             }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
-
-
-
+            return legat;
         }
 
         public async Task TruncateData()
         {
-            try
-            {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"TRUNCATE TABLE `wordpress_ansoeg`",
+            string cmdText = @"TRUNCATE TABLE `wordpress_ansoeg`";
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
-
-                await _database.OpenConnectionAsync();
-                await cmd.ExecuteNonQueryAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+            await _database.ExecuteNonQueryAsync(cmdText);
         }
 
         public async Task UpdateAsync(Legat updateEntity)
         {
-            try
-            {
-                using MySqlCommand cmd = new()
-                {
-                    CommandText = @"UPDATE `nybyesfo_nybyesfond`.`wordpress_ansoeg` 
+            string cmdText = @"UPDATE `nybyesfo_nybyesfond`.`wordpress_ansoeg` 
                                 SET
                                 `first_name` = @firstName,
                                 `last_name` = @lastName,
@@ -312,43 +203,38 @@ namespace DataAccess.Repositories
                                 `knowledge_of_other_search` = @knowledgeOfOtherSearch,
                                 `additional_info` = @additionalInfo,
                                 `todays_date` = @todaysDate
-                                WHERE `ansoeg_id` = @id;",
+                                WHERE `ansoeg_id` = @id;";
 
-                    CommandType = CommandType.Text,
-                    Connection = ((MySqlDatabase)_database).SqlConnection
-                };
-
-                cmd.Parameters.AddWithValue("@firstName", updateEntity.Person.FirstName);
-                cmd.Parameters.AddWithValue("@lastName", updateEntity.Person.LastName);
-                cmd.Parameters.AddWithValue("@eMail", updateEntity.Person.EMail);
-                cmd.Parameters.AddWithValue("@roadName", updateEntity.Person.Address.Roadname);
-                cmd.Parameters.AddWithValue("@houseNumber", updateEntity.Person.Address.HouseNumber.ToString());
-                cmd.Parameters.AddWithValue("@zipNumber", updateEntity.Person.Address.ZipNumber);
-                cmd.Parameters.AddWithValue("@city", updateEntity.Person.Address.City);
-                cmd.Parameters.AddWithValue("@youthEducation", updateEntity.Person.Education.YouthEducation);
-                cmd.Parameters.AddWithValue("@ongoingEducation", updateEntity.Person.Education.OngoingEducation);
-                cmd.Parameters.AddWithValue("@placeOfEducation", updateEntity.Person.Education.PlaceOfEducation);
-                cmd.Parameters.AddWithValue("@reasonForSearch", updateEntity.ReasonForSearch);
-                cmd.Parameters.AddWithValue("@wishedAmount", updateEntity.WishedAmount.ToString());
-                cmd.Parameters.AddWithValue("@budget", updateEntity.Budget);
-                cmd.Parameters.AddWithValue("@dateFrom", updateEntity.DateFrom);
-                cmd.Parameters.AddWithValue("@dateTo", updateEntity.DateTo);
-                cmd.Parameters.AddWithValue("@isSearchedAlready", updateEntity.IsSearchedAlready);
-                cmd.Parameters.AddWithValue("@knowledgeOfOtherSearch", updateEntity.KnowledgeOfOtherSearch);
-                cmd.Parameters.AddWithValue("@additionalInfo", updateEntity.AdditionalInfo);
-                cmd.Parameters.AddWithValue("@todaysDate", updateEntity.TodaysDate);
-
-                await _database.OpenConnectionAsync();
-                await cmd.ExecuteNonQueryAsync();
-            }
-            catch (Exception)
+            IDictionary<string, object> sqlParams = new Dictionary<string, object>
             {
-                throw;
-            }
-            finally
-            {
-                await _database.CloseConnectionAsync();
-            }
+                { "@id", updateEntity.Id },
+                { "@first_name", updateEntity.Person.FirstName },
+                { "@last_name", updateEntity.Person.LastName },
+                { "@eMail", updateEntity.Person.EMail },
+                { "@roadName", updateEntity.Person.Address.Roadname },
+                { "@houseNumber", updateEntity.Person.Address.HouseNumber.ToString() },
+                { "@zipNumber", updateEntity.Person.Address.ZipNumber },
+                { "@city", updateEntity.Person.Address.City },
+                { "@youthEducation", updateEntity.Person.Education.YouthEducation },
+                { "@ongoingEducation", updateEntity.Person.Education.OngoingEducation },
+                { "@placeOfEducation", updateEntity.Person.Education.PlaceOfEducation },
+                { "@reasonForSearch", updateEntity.ReasonForSearch },
+                { "@wishedAmount", updateEntity.WishedAmount.ToString() },
+                { "@budget", updateEntity.Budget },
+                { "@dateFrom", updateEntity.DateFrom },
+                { "@dateTo", updateEntity.DateTo },
+                { "@isSearchedAlready", updateEntity.IsSearchedAlready },
+                { "@knowledgeOfOtherSearch", updateEntity.KnowledgeOfOtherSearch },
+                { "@additionalInfo", updateEntity.AdditionalInfo },
+                { "@todaysDate", updateEntity.TodaysDate }
+            };
+
+            await _database.ExecuteNonQueryAsync(cmdText, sqlParams);
+        }
+
+        private static bool ThereIsNewRecords(long existingDataCount, long rowCount)
+        {
+            return existingDataCount < rowCount || existingDataCount > rowCount;
         }
     }
 }

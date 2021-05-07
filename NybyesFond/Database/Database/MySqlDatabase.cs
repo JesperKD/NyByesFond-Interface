@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -12,42 +13,77 @@ namespace DataAccess.Database
 {
     public class MySqlDatabase : Database
     {
-        private readonly MySqlConnection _sqlConnection;
+        private readonly MySqlConnection _mySqlConnection;
 
         public MySqlDatabase(IConfiguration configuration) : base(configuration)
         {
-            _sqlConnection = new MySqlConnection(GetConnectionString("NyeByesConnection"));
+            string connString = GetConnectionString(configuration.GetSection("UseConnection").Value);
+            _mySqlConnection = new(connString);
+        }
+
+        public override async Task ExecuteNonQueryAsync(string cmdText = null, IDictionary<string, object> sqlParams = null)
+        {
+            using MySqlCommand commandObj = new()
+            {
+                CommandText = cmdText,
+                CommandType = CommandType.Text,
+                Connection = _mySqlConnection
+            };
+
+            if (SqlParamsIsNotNull(sqlParams))
+            {
+                AddSqlParamsToSqlCommand(sqlParams, commandObj);
+            }
+
+            await OpenConnectionAsync();
+
+            await commandObj.ExecuteNonQueryAsync();
+        }
+
+        public override async Task<DbDataReader> GetDataReaderAsync(string cmdText = null, IDictionary<string, object> sqlParams = null)
+        {
+            using MySqlCommand commandObj = new()
+            {
+                CommandText = cmdText,
+                CommandType = CommandType.Text,
+                Connection = _mySqlConnection
+            };
+
+            if (SqlParamsIsNotNull(sqlParams))
+            {
+                AddSqlParamsToSqlCommand(sqlParams, commandObj);
+            }
+
+            await OpenConnectionAsync();
+
+            return await commandObj.ExecuteReaderAsync(CommandBehavior.CloseConnection);
         }
 
         public override async Task CloseConnectionAsync()
         {
-            try
-            {
-                if (_sqlConnection.State == ConnectionState.Closed) return;
+            if (_mySqlConnection.State == ConnectionState.Closed) return;
 
-                await _sqlConnection.CloseAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            await _mySqlConnection.CloseAsync();
         }
 
         public override async Task OpenConnectionAsync()
         {
-            try
-            {
-                if (_sqlConnection.State == ConnectionState.Open) return;
+            if (_mySqlConnection.State == ConnectionState.Open) return;
 
-                await _sqlConnection.OpenAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
+            await _mySqlConnection.OpenAsync();
         }
 
-        public MySqlConnection SqlConnection { get { return _sqlConnection; } }
+        private static bool SqlParamsIsNotNull(IDictionary<string, object> sqlParams)
+        {
+            return sqlParams != null;
+        }
+
+        private static void AddSqlParamsToSqlCommand(IDictionary<string, object> sqlParams, MySqlCommand commandObj)
+        {
+            foreach (var param in sqlParams)
+            {
+                commandObj.Parameters.AddWithValue(param.Key, param.Value);
+            }
+        }
     }
 }

@@ -66,6 +66,8 @@ namespace GUI_Interface.ViewModels
             {
                 await Task.Run(() => _legatRepository.CreateAsync(legat));
             }
+
+            await GetAllLegats();
         }
 
         private void ClearDataCollection()
