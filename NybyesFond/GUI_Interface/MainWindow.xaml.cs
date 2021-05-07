@@ -58,7 +58,9 @@ namespace GUI_Interface
 
         private async void Refresh_Button_Click(object sender, RoutedEventArgs e)
         {
+            var defaultContent = RefreshButton.Content;
             RefreshButton.IsEnabled = false;
+            RefreshButton.Content = "Opdatere Ansøgninger..";
 
             try
             {
@@ -71,11 +73,13 @@ namespace GUI_Interface
             finally
             {
                 RefreshButton.IsEnabled = true;
+                RefreshButton.Content = defaultContent;
             }
         }
 
         private async void Delete_Button_Click(object sender, RoutedEventArgs e)
         {
+            var defaultContent = DeleteButton.Content;
             DeleteButton.IsEnabled = false;
 
             MessageBoxResult messageBoxResult = DisplayMessage(
@@ -88,6 +92,7 @@ namespace GUI_Interface
             {
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
+                    DeleteButton.Content = "Sletter Oplysninger..";
                     await _legatViewModel.TruncateData();
                 }
             }
@@ -98,6 +103,25 @@ namespace GUI_Interface
             finally
             {
                 DeleteButton.IsEnabled = true;
+                DeleteButton.Content = defaultContent;
+            }
+        }
+
+        private async void CreateTestData_Click(object sender, RoutedEventArgs e)
+        {
+            string defaultButtonContent = (string)TestDataButton.Content;
+            TestDataButton.IsEnabled = false;
+
+            try
+            {
+                TestDataButton.Content = "Opretter Test data..";
+
+                await _legatViewModel.CreateTestDataAsync(100);
+            }
+            finally
+            {
+                TestDataButton.IsEnabled = true;
+                TestDataButton.Content = defaultButtonContent;
             }
         }
 

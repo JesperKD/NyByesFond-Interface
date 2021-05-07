@@ -69,7 +69,7 @@
 
                 <Trigger Property="SortDirection" Value="Descending">
                     <Setter Property="Foreground" Value="{StaticResource HoverText}"/>
-                </Trigger>
+                </Trigger>                
             </Style.Triggers>
         </Style>
 
@@ -85,10 +85,16 @@
             <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="0"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Gray" />
+                    <Setter Property="Foreground" Value="{StaticResource TitleText}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        
+
         <Style x:Key="RowElementStyle" TargetType="DataGridRow">
-            <Setter Property="Background" Value="{StaticResource DataGridBackground}"/>
             <Setter Property="BorderThickness" Value="1,0,0,0"/>
             <Setter Property="BorderBrush" Value="{StaticResource DataGridLineColor}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -180,6 +186,9 @@
             <StackPanel x:Name="ButtonPanel1" Grid.Row="0" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Top" Margin="0, 0, 0, 5">
                 <Button x:Name="RefreshButton" Style="{StaticResource RefreshButtonStyle}" Height="50" Click="Refresh_Button_Click" Content="Opdater" />
             </StackPanel>
+            <StackPanel x:Name="TestDataStackPanel" Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0, 5, 0, 5">
+                <Button x:Name="TestDataButton" Height="50" Click="CreateTestData_Click" Content="Opret Test Data" />
+            </StackPanel>
             <!--<StackPanel x:Name="MockDataStackPanel" Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0, 5, 0, 5">
                 <Button x:Name="MockDataButton" Height="50" Click="CreateMockData_Click" Content="Oprete Mock Data" />
             </StackPanel>-->
@@ -188,21 +197,20 @@
             </StackPanel>
         </Grid>
 
-        <DataGrid x:Name="LegatDG" Grid.Column="1" Grid.Row="1" ColumnHeaderStyle="{StaticResource HeaderElementStyle}" CellStyle="{StaticResource CellElementStyle}" RowStyle="{StaticResource RowElementStyle}" ItemsSource="{ Binding Path=ObservableLegats, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged }" Style="{StaticResource DataGridStyle}">
-
+        <DataGrid x:Name="LegatDG" Grid.Column="1" Grid.Row="1" SelectionMode="Single" IsReadOnly="True" SelectionUnit="FullRow" ColumnHeaderStyle="{StaticResource HeaderElementStyle}" RowStyle="{StaticResource RowElementStyle}" CellStyle="{StaticResource CellElementStyle}" ItemsSource="{ Binding Path=ObservableLegats, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged }" Style="{StaticResource DataGridStyle}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Navn" Binding="{Binding Person.FullName}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="E-Mail" Binding="{Binding Person.EMail}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Adresse" Binding="{Binding Person.Address.FullAddress}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Ungdomsuddannelsesinstitution" Binding="{Binding Person.Education.YouthEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Igangværende uddannelse" Binding="{Binding Person.Education.OngoingEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Uddannelsesinstitution" Binding="{Binding Person.Education.PlaceOfEducation}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Ansøgt beløb" Binding="{Binding WishedAmount}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Beløbet ønskes anvendt fra" Binding="{Binding DateFrom, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Beløbet ønskes anvendt til" Binding="{Binding DateTo, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Allerede søgt" Binding="{Binding IsSearchedAlready}" ElementStyle="{StaticResource ColumnElementStyle}"/>
-                <DataGridTextColumn Header="Dags dato" Binding="{Binding TodaysDate, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Navn" Binding="{Binding Person.FullName}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="E-Mail" Binding="{Binding Person.EMail}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Adresse" Binding="{Binding Person.Address.FullAddress}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Ungdomsuddannelsesinstitution" Binding="{Binding Person.Education.YouthEducation}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Igangværende uddannelse" Binding="{Binding Person.Education.OngoingEducation}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Uddannelsesinstitution" Binding="{Binding Person.Education.PlaceOfEducation}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Ansøgt beløb" Binding="{Binding WishedAmount}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Beløbet ønskes anvendt fra" Binding="{Binding DateFrom, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Beløbet ønskes anvendt til" Binding="{Binding DateTo, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Allerede søgt" Binding="{Binding IsSearchedAlready}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
+                <DataGridTextColumn Header="Dags dato" Binding="{Binding TodaysDate, StringFormat=d, ConverterCulture=da_DK}" ElementStyle="{StaticResource ColumnElementStyle}" Width="auto"/>
                 <!--<DataGridTextColumn Header="Formål med ansøgningen" Binding="{Binding ReasonForSearch}"/>-->
                 <!--<DataGridTextColumn Header="Budget" Binding="{Binding Budget}"/>-->
                 <!--<DataGridTextColumn Header="Forventes anden støtte" Binding="{Binding KnowledgeOfOtherSearch}"/>-->
