@@ -186,9 +186,9 @@
             <StackPanel x:Name="ButtonPanel1" Grid.Row="0" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Top" Margin="0, 0, 0, 5">
                 <Button x:Name="RefreshButton" Style="{StaticResource RefreshButtonStyle}" Height="50" Click="Refresh_Button_Click" Content="Opdater" />
             </StackPanel>
-            <StackPanel x:Name="TestDataStackPanel" Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0, 5, 0, 5">
+            <!--<StackPanel x:Name="TestDataStackPanel" Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0, 5, 0, 5">
                 <Button x:Name="TestDataButton" Height="50" Click="CreateTestData_Click" Content="Opret Test Data" />
-            </StackPanel>
+            </StackPanel>-->
             <!--<StackPanel x:Name="MockDataStackPanel" Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0, 5, 0, 5">
                 <Button x:Name="MockDataButton" Height="50" Click="CreateMockData_Click" Content="Oprete Mock Data" />
             </StackPanel>-->

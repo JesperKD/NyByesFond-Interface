@@ -114,27 +114,27 @@ namespace GUI_Interface
             }
         }
 
-        private async void CreateTestData_Click(object sender, RoutedEventArgs e)
-        {
-            string defaultButtonContent = (string)TestDataButton.Content;
-            TestDataButton.IsEnabled = false;
+        //private async void CreateTestData_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string defaultButtonContent = (string)TestDataButton.Content;
+        //    TestDataButton.IsEnabled = false;
 
-            try
-            {
-                TestDataButton.Content = "Opretter Test data..";
+        //    try
+        //    {
+        //        TestDataButton.Content = "Opretter Test data..";
 
-                await _legatViewModel.CreateTestDataAsync(100);
-            }
-            catch (Exception)
-            {
-                DisplayMessage("Handling blev afbrudt.", "INFO", MessageBoxImage.Information);
-            }
-            finally
-            {
-                TestDataButton.IsEnabled = true;
-                TestDataButton.Content = defaultButtonContent;
-            }
-        }
+        //        await _legatViewModel.CreateTestDataAsync(100);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        DisplayMessage("Handling blev afbrudt.", "INFO", MessageBoxImage.Information);
+        //    }
+        //    finally
+        //    {
+        //        TestDataButton.IsEnabled = true;
+        //        TestDataButton.Content = defaultButtonContent;
+        //    }
+        //}
 
         //private async void CreateMockData_Click(object sender, RoutedEventArgs e)
         //{
